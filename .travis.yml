@@ -16,7 +16,7 @@ after_success:
 
     #Loin to the docker CLI
     #retriev docker password from env variable over stdin as input to next command | run docker login command with username and the password form stdin
-    -echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_ID" --password-stdin
+    - echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_ID" --password-stdin
 
     #Take those images and push them to docker hub
     - docker push adarsha12/multi-client
