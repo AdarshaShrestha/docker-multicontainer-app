@@ -1,0 +1,25 @@
+sudo: required
+services: 
+    - docker
+
+before_install:
+    - docker build -t adarsha12/docker-multicontainer-app -f ./client/Dockerfile.dev ./client
+
+script:
+    - docker run -e CI=true adarsha12/docker-multicontainer-app npm test
+
+after_success:
+    - docker build -t adarsha12/multi-client ./client
+    - docker build -t adarsha12/multi-nginx ./nginx
+    - docker build -t adarsha12/multi-server ./server
+    - docker build -t adarsha12/multi-worker ./worker
+
+    #Loin to the docker CLI
+    #retriev docker password from env variable over stdin as input to next command | run docker login command with username and the password form stdin
+    -echo "$DOCKER_PASSWORD" | docker login -u "$DOCKER_ID" --password-stdin
+
+    #Take those images and push them to docker hub
+    - docker push adarsha12/multi-client
+    - docker push adarsha12/multi-nginx
+    - docker push adarsha12/multi-server
+    - docker push adarsha12/multi-worker
